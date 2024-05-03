@@ -1,0 +1,30 @@
+const express = require("express");
+const cors = require("cors");
+const bodyParser = require("body-parser");
+const user = require("./controllers/user.controller.js");
+const category = require("./controllers/categories.controller.js");
+const product = require("./controllers/products.controller.js");
+const auth = require("./middlewears/auth.middlewear.js");
+const log=require("./middlewears/log.middlewear.js");
+const checkBody=require("./middlewears/checkBody.middlewear.js");
+const errorHandler=require("./middlewears/errorHandler.middlewear.js");
+require("dotenv").config();
+const port = process.env.PORT || 4000;
+const app = express();
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(log);
+app.use(user);
+app.use(auth);
+app.use(checkBody);
+app.use(category);
+app.use(product);
+app.use(cors());
+app.get("*", (req, res) => {
+    res.status(404);
+    res.send("PAGE NOT FOUND");
+});
+app.use(errorHandler);
+app.listen(port, () => {
+    console.log(`we listening at http://localhost:${port}`);
+});
